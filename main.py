@@ -6,7 +6,8 @@ wd = os.getcwd()
 
 #from sqlConnnect import mssql
 from config import sqlDB
-from utils import library, version3, mssql
+from utils import library, version3
+import db
 
 #getting timestamp to log results 
 timeStamp = '{:%Y_%m_%d_%H_%M_%S}'.format(datetime.datetime.now())
@@ -39,30 +40,9 @@ df=library.getDataFrame(folderLocation,surveyName+".csv")
 df= df.dropna()
 df = df.rename(columns={"ID":"personID"})
 
-#process to send data directly to SQL in 10,000 chunks
+#process to send data directly to SQL 
+db.send_data(df)
 
-#create database
-try:
-    mssql.send(df,sqlDB,actionType='create').data()
-    print("starting to append  data into SQL.")
-except:
-    print("starting to append  data into SQL.")
- 
-    
-def splitDataFrameIntoSmaller(df, chunkSize = 10000): 
-    listOfDf = list()
-    numberChunks = len(df) // chunkSize + 1
-    for i in range(numberChunks):
-        listOfDf.append(df[i*chunkSize:(i+1)*chunkSize])
-    return listOfDf
-
-#split data into chuncks
-listDF = splitDataFrameIntoSmaller(df)
-
-#send data in 10,000 bit chunks
-for i in listDF:
-    mssql.send(i,sqlDB).data()
-    print("batch added to database" )
     
 
 #save data
