@@ -6,13 +6,13 @@ Created on Tue Feb 12 11:53:04 2019
 """
 import urllib
 from sqlalchemy import create_engine,event
-import pypyodbc
+import pyodbc
 import pandas as pd
 
 from config import serverName , userName ,password ,database ,sqlDB
 
 params = urllib.parse.quote_plus("DRIVER={ODBC Driver 17 for SQL Server};SERVER=" + serverName + ";DATABASE="+ database +";UID="+userName+";PWD=" +password)
-engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params, module=pypyodbc)
+engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params, module=pyodbc)
 
 @event.listens_for(engine, 'before_cursor_execute') 
 def receive_before_cursor_execute(conn, cursor, statement, params, context, executemany): 

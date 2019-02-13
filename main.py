@@ -7,7 +7,7 @@ wd = os.getcwd()
 #from sqlConnnect import mssql
 from config import sqlDB
 from utils import library, version3
-import db
+from utils.db import db
 
 #getting timestamp to log results 
 timeStamp = '{:%Y_%m_%d_%H_%M_%S}'.format(datetime.datetime.now())
