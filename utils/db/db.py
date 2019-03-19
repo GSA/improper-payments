@@ -9,7 +9,12 @@ from sqlalchemy import create_engine,event
 import pyodbc
 import pandas as pd
 
-from config import serverName , userName ,password ,database ,sqlDB
+from config import sql_enviorn 
+
+serverName = sql_enviorn['serverName']
+password =  sql_enviorn['password']
+database= sql_enviorn['database']
+userName =   sql_enviorn['userName']
 
 params = urllib.parse.quote_plus("DRIVER={ODBC Driver 17 for SQL Server};SERVER=" + serverName + ";DATABASE="+ database +";UID="+userName+";PWD=" +password)
 engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params, module=pyodbc)
@@ -21,6 +26,6 @@ def receive_before_cursor_execute(conn, cursor, statement, params, context, exec
         cursor.fast_executemany = True
 
 
-def send_data(df):
+def send_data(df,sqlDB):
     df.to_sql(sqlDB,engine,if_exists='append',chunksize= None)
     

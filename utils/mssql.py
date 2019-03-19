@@ -7,7 +7,13 @@ Created on Tue Nov 15 14:34:24 2016
 import urllib, pyodbc
 import sqlalchemy as sl
 import pandas as pd
-from config import serverName , userName ,password ,database 
+#from config import serverName , userName ,password ,database 
+from config import sql_enviorn 
+
+serverName = sql_enviorn['serverName']
+password =  sql_enviorn['password']
+database= sql_enviorn['database']
+userName =   sql_enviorn['userName']
 
 class pull():
     

@@ -3,7 +3,7 @@
 import datetime,os
 
 #from sqlConnnect import mssql
-from config import sqlDB as database_name
+from config import survey_dict
 from utils import library, version3
 from utils.db import db
 
@@ -11,7 +11,23 @@ from utils.db import db
 
 
 
-def run(sqlDB):
+def run():
+    for i in survey_dict:
+        if _check_active_survey(survey_dict):
+            _download_extract_insert(survey_dict[i]['sqlDB'],survey_dict[i]['token'],survey_dict[i]['surveyID'])
+        else:
+            print(survey_dict[i] + ": is not an active survey")
+
+
+
+def _check_active_survey(survey_dict):
+    if datetime.datetime.strptime(survey_dict['improper_payments']['dateStart'],'%m-%d-%Y') <= datetime.datetime.now() <= datetime.datetime.strptime(survey_dict['improper_payments']['dateEnd'],'%m-%d-%Y'):
+        return True
+    else:
+        return False
+
+
+def _download_extract_insert(sqlDB,token,survey):
     
     
     #getting timestamp to log results 
@@ -28,7 +44,7 @@ def run(sqlDB):
 
     
     #get survey data and save to sqlite
-    library.surveyToSqlite(sqlDB,folderLocation)
+    library.surveyToSqlite(sqlDB,folderLocation,token,survey)
     surveyName = library.getSurveyName(sqlDB,folderLocation) 
     fileName = folderLocation + "/" + surveyName + ".csv"
     print("survey data retrieved")
@@ -38,13 +54,11 @@ def run(sqlDB):
     
     try:
         lastResponse = library.getLastResonseSqlite(sqlDB,folderLocation)
-        version3.qualtrics().downloadExtractZip(lastResponseId=lastResponse,filePath=folderLocation)
+        version3.qualtrics(token,survey).downloadExtractZip(lastResponseId=lastResponse,filePath=folderLocation)
     except:
-        version3.qualtrics().downloadExtractZip(filePath=folderLocation)
+        version3.qualtrics(token,survey).downloadExtractZip(filePath=folderLocation)
         
-    #save survey download data into sqlite
-    library.surveyDownloadsToSqlite(sqlDB,fileName,folderLocation,timeStamp)
-    print("saving meta data to sqllite database")
+    
     
     # reshape data for MS SQL intake
     df=library.getDataFrame(folderLocation,surveyName+".csv")
@@ -52,7 +66,11 @@ def run(sqlDB):
     df = df.rename(columns={"ID":"personID"})
     
     #process to send data directly to SQL 
-    db.send_data(df)
+    
+    db.send_data(df,sqlDB)
+    #save survey download data into sqlite
+    library.surveyDownloadsToSqlite(sqlDB,fileName,folderLocation,timeStamp)
+    print("saving meta data to sqllite database")
     
         
     
@@ -74,4 +92,4 @@ def _check_directory(sqlDB):
 
 
 if __name__ == "__main__":
-    run(database_name)
+    run()

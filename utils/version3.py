@@ -9,11 +9,13 @@ import requests
 import zipfile
 from io import BytesIO
 from pandas.io.json import json_normalize
-from config import token, surveyID
+#from config import token, surveyID
+
+
 
 class qualtrics:
     
-    def __init__(self):
+    def __init__(self,token,surveyID):
         self.apiToken = token
         self.surveyId = surveyID 
         self.baseUrl = "https://cemgsa.gov1.qualtrics.com/API/v3/"

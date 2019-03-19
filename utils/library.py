@@ -111,9 +111,9 @@ def getSurveyInfo(surveyJSON):
     df['surveyName'] = surveyName
     return df 
 
-def surveyToSqlite(sqlDB,folderLocation):
+def surveyToSqlite(sqlDB,folderLocation,token,survey):
     conn = sqlite3.connect(folderLocation + "/" + sqlDB + '.db.sqlite')
-    surveyJSON = version3.qualtrics().getSurveyInfo()
+    surveyJSON = version3.qualtrics(token,survey).getSurveyInfo()
     df  = getSurveyInfo(surveyJSON)
     try:
         sendSQLite(df,'surveyInfo',conn)
