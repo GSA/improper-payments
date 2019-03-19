@@ -16,7 +16,7 @@ def run():
         if _check_active_survey(survey_dict,survey):
             _download_extract_insert(survey_dict[survey]['sqlDB'],survey_dict[survey]['token'],survey_dict[survey]['surveyID'])
         else:
-            print(survey_dict[survey] + ": is not an active survey")
+            print(survey_dict[survey]['sqlDB'] + ": is not an active survey")
 
 
 
