@@ -12,16 +12,16 @@ from utils.db import db
 
 
 def run():
-    for i in survey_dict:
-        if _check_active_survey(survey_dict):
-            _download_extract_insert(survey_dict[i]['sqlDB'],survey_dict[i]['token'],survey_dict[i]['surveyID'])
+    for survey in survey_dict:
+        if _check_active_survey(survey_dict,survey):
+            _download_extract_insert(survey_dict[survey]['sqlDB'],survey_dict[survey]['token'],survey_dict[survey]['surveyID'])
         else:
-            print(survey_dict[i] + ": is not an active survey")
+            print(survey_dict[survey] + ": is not an active survey")
 
 
 
-def _check_active_survey(survey_dict):
-    if datetime.datetime.strptime(survey_dict['improper_payments']['dateStart'],'%m-%d-%Y') <= datetime.datetime.now() <= datetime.datetime.strptime(survey_dict['improper_payments']['dateEnd'],'%m-%d-%Y'):
+def _check_active_survey(survey_dict,survey):
+    if datetime.datetime.strptime(survey_dict[survey]['dateStart'],'%m-%d-%Y') <= datetime.datetime.now() <= datetime.datetime.strptime(survey_dict[survey]['dateEnd'],'%m-%d-%Y'):
         return True
     else:
         return False
