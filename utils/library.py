@@ -136,6 +136,15 @@ def getSurveyDownloadData(file,timeStamp):
     df = pd.DataFrame(data=d,index=[timeStamp])
     return df
 
+def check_sqlite(sqlDB,folderLocation): 
+    conn = sqlite3.connect(folderLocation + "/" + sqlDB + '.db.sqlite')
+    sql = 'SELECT lastResponse FROM surveyDownload ORDER BY ROWID DESC LIMIT 1'
+    try:
+        pullSqlite(sql,conn)
+        return True
+    except:
+        return False
+
 def surveyDownloadsToSqlite(sqlDB,file,folderLocation,timeStamp):
     conn = sqlite3.connect(folderLocation + "/" + sqlDB + '.db.sqlite')
     df  = getSurveyDownloadData(file,timeStamp)

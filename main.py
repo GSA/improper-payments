@@ -6,9 +6,7 @@ import datetime,os
 from config import survey_dict
 from utils import library, version3
 from utils.db import db
-
-
-
+import sys
 
 
 def run():
@@ -51,12 +49,16 @@ def _download_extract_insert(sqlDB,token,survey):
     
     
     #download data from api and save to csv
-    
-    try:
+    if library.check_sqlite(sqlDB,folderLocation):
         lastResponse = library.getLastResonseSqlite(sqlDB,folderLocation)
-        version3.qualtrics(token,survey).downloadExtractZip(lastResponseId=lastResponse,filePath=folderLocation)
-    except:
-        version3.qualtrics(token,survey).downloadExtractZip(filePath=folderLocation)
+        try:
+            version3.qualtrics(token,survey).downloadExtractZip(lastResponseId=lastResponse,filePath=folderLocation)
+        except: 
+            print("failed to get data")
+            sys.exit(1)
+    else:
+        print("a")
+        #version3.qualtrics(token,survey).downloadExtractZip(filePath=folderLocation)
         
     
     
