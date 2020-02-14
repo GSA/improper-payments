@@ -55,6 +55,7 @@ def _download_extract_insert(sqlDB,token,survey):
             version3.qualtrics(token,survey).downloadExtractZip(lastResponseId=lastResponse,filePath=folderLocation)
         except: 
             print("failed to get data")
+            print(lastResponse)
             sys.exit(1)
     else:
         version3.qualtrics(token,survey).downloadExtractZip(filePath=folderLocation)
